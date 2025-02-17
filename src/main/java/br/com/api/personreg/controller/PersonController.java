@@ -14,11 +14,9 @@ public class PersonController {
 
     private final PersonService service;
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     public ResponseEntity<PersonModel> create(@RequestBody PersonInput input) {
         PersonModel model = service.create(input);
         return ResponseEntity.ok(model);
     }
-
 }

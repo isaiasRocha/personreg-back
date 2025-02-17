@@ -1,0 +1,35 @@
+networks:
+  person-reg-net:  # Defina a rede compartilhada
+    external: true  # Usando a mesma rede externa
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: person_reg_db
+    restart: always
+    environment:
+      POSTGRES_DB: personreg
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5432:5432"
+    networks:
+      - person-reg-net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rochasystems/person_reg_backend:v1.0.0
+    container_name: person_reg_backend
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://person_reg_db:5432/personreg
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    ports:
+      - "8080:8080"
+    networks:
+      - person-reg-net
